@@ -1,6 +1,5 @@
 package sample;
 
-import javafx.embed.swing.SwingFXUtils;
 import org.tensorflow.SavedModelBundle;
 import org.tensorflow.Tensor;
 import org.tensorflow.ndarray.Shape;
@@ -62,7 +61,7 @@ public class RunModel {
                     imageHeight, sourceImage.getType());
 
             if (sourceImage.getWidth() != imageWidth || sourceImage.getHeight() != imageHeight) {
-                                // scales the input image to the output image
+                // scales the input image to the output image
                 Graphics2D g2d = image.createGraphics();
                 g2d.drawImage(sourceImage, 0, 0, imageWidth, imageHeight, null);
                 g2d.dispose();
@@ -71,12 +70,13 @@ public class RunModel {
                 image = sourceImage;
             }
             try {
-                ImageIO.write(image, "png", new File("C:\\Users\\Hp\\Desktop\\newtest.png"));
+                ImageIO.write(image, "png", new File("C:\\Users\\Hp\\Desktop\\newtest2.png"));
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
             // Converts the image to floats and convert them to grayscale
-            //int i = 0;
+            int i = 0;
             for (int h = 0; h < imageHeight; ++h) {
                 for (int w = 0; w < imageWidth; ++w) {
                     int p = image.getRGB(h, w);
@@ -89,10 +89,15 @@ public class RunModel {
                     //calculate average
                     int avg = (r + g + b) / 3;
 
-                    tensor.setFloat((float) avg/(255.0f), 0, h, w, 0);
+                    // tensor.setFloat((float) avg/(255.0f), 0, h, w, 0);
 
+                    tensor.setFloat(1-(image.getData().getDataBuffer().getElemFloat(i) / 255), 0, h, w, 0);
+                    i += 3;
                 }
             }
+
+
+
         });
     }
 

@@ -45,7 +45,7 @@ public class Main extends Application {
 
         final boolean[] isActiveText = {false};
         addText.setOnAction(e -> isActiveText[0] = true);
-        double scale = 0.5;
+        double scale = 2;
         Color colorChoice = Color.BLACK;
         root.getChildren().addAll(canvas, saveBtn);
         clearBtn.setOnAction(e -> {
@@ -84,7 +84,7 @@ public class Main extends Application {
                     public void handle(MouseEvent e) {
                         pushToUndoStack();
                         gc.setFill(colorChoice);
-                        gc.fillRoundRect(e.getX() - 2, e.getY() - 2, 5 * scale, 5 * scale, 5, 5);
+                        gc.fillRoundRect(e.getX() - 2, e.getY() - 2, 2 * scale, 2 * scale, 5, 5);
 
                     }
                 });

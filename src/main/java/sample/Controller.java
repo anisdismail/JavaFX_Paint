@@ -29,7 +29,7 @@ public class Controller
     String textVal = "test";
 
     boolean enterTextOnNextClick = false;
-
+    boolean eraserOnNextClick= false;
     double currentScale = 1 ;
 
     @FXML
@@ -62,8 +62,13 @@ public class Controller
                 e ->
                 {
                     pushToUndoStack();
-                    graphicsContext.setFill(ColorPickerController.currentColor);
-                    graphicsContext.fillRoundRect(e.getX() - 2, e.getY() - 2, 5 * currentScale, 5 * currentScale, 5, 5);
+                    if(!eraserOnNextClick) {
+                        graphicsContext.setFill(ColorPickerController.currentColor);
+                        graphicsContext.fillRoundRect(e.getX() - 2, e.getY() - 2, 5 * currentScale, 5 * currentScale, 5, 5);
+                    }else{
+
+                        graphicsContext.clearRect(e.getX() - 2, e.getY() - 2, 5 * currentScale, 5 * currentScale);
+                    }
 
                 });
 
@@ -176,5 +181,10 @@ public class Controller
     void onAddTextButtonPressed(ActionEvent event)
     {
         enterTextOnNextClick = true; // next click on canvas will let user enter text
+    }
+
+    @FXML
+    void onEraserButtonPressed(ActionEvent actionEvent) {
+    eraserOnNextClick= !eraserOnNextClick;
     }
 }

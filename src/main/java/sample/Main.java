@@ -31,10 +31,7 @@ public class Main extends Application
     {
         // new stage for the popupwindow
 
-        secondaryStage = new Stage();
 
-        // load FXML file
-        primaryStage = stage;
 
         Pane root = FXMLLoader.load(getClass().getResource("/GUI/MainPane.fxml"));
         primaryStage.setTitle("Our Drawing App");

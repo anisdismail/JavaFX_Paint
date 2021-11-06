@@ -21,6 +21,8 @@ import java.util.Stack;
 
 public class Controller
 {
+    private int MAX_UNDO_HISTORY_SIZE = 50;
+
     // consider moving it to a better place
     Stack<Image> undoStack = new Stack<>();
     GraphicsContext graphicsContext;
@@ -77,11 +79,7 @@ public class Controller
 
     }
 
-    public void pushToUndoStack()
-    {
-        Image snapshot = canvas.snapshot(null, null);
-        undoStack.push(snapshot);
-    }
+
 
     @FXML
     void onLoadButtonPressed(ActionEvent event)
@@ -151,6 +149,17 @@ public class Controller
     {
         graphicsContext.setFill(Color.WHITE);
         graphicsContext.clearRect(0,0,canvas.getWidth(),canvas.getHeight());
+    }
+
+    public void pushToUndoStack()
+    {
+        if ( undoStack.size() >= MAX_UNDO_HISTORY_SIZE )
+        {
+            undoStack.remove(0); // sacrifice oldest undo snapshot
+        }
+
+        Image snapshot = canvas.snapshot(null, null);
+        undoStack.push(snapshot);
     }
 
     @FXML

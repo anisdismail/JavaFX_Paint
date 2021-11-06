@@ -12,12 +12,10 @@ import java.util.Stack;
 
 public class Main extends Application
 {
-
     // primary stage
     static Stage primaryStage;
     static Stage secondaryStage;
     static Scene colorPickerScene;
-
 
     Stack<Image> undoStack = new Stack<>();
     Canvas canvas = new Canvas(500, 300);

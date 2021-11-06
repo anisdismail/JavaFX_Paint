@@ -1,6 +1,5 @@
 package sample;
 
-import javafx.embed.swing.SwingFXUtils;
 import org.tensorflow.SavedModelBundle;
 import org.tensorflow.Tensor;
 import org.tensorflow.ndarray.Shape;

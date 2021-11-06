@@ -1,0 +1,110 @@
+*
+{
+    -fx-primary: #002b36 ;
+    -fx-secondary: #FFFFFF ;
+    -fx-text-color : #93a1a1 ;
+    -fx-yellow : #b58900 ;
+}
+
+.root
+{
+    -fx-background-color: -fx-primary ;
+    -fx-font-size: 20 ;
+    -fx-fill: -fx-text-color ;
+}
+
+.button
+{
+    -fx-text-fill: -fx-text-color  ;
+    -fx-border-color: #c9d423;
+    -fx-border-radius: 20px ;
+    -fx-background-radius: 20px ;
+    -fx-background-color: #073642 ;
+    -fx-border-width: 3;
+}
+
+.check-box
+{
+    -fx-text-fill: -fx-text-color ;
+}
+
+/* tab pane styling */
+
+.tab
+{
+    -fx-background-color: #073642 ;
+    -fx-pref-width: 168 ;
+    -fx-pref-height: 60 ;
+    -fx-underline: #ffffff ;
+}
+
+.tab-header-background
+{
+    -fx-background-color: #073642 ;
+}
+
+.popup-background
+{
+    -fx-background-color: #3a112a;
+}
+
+
+
+.my-tab-pane
+{
+    -fx-background-color: -fx-primary ;
+    -fx-font-family: "Cantarell Extra Bold" ;
+    -fx-font-size: 18 ;
+    -fx-text-fill: -fx-text_color ;
+}
+
+.jfx-tab-pane .tab-selected-line
+{
+    -fx-border-color: #b58900 ;
+    -fx-pref-height: 3 ;
+}
+
+.text-field
+{
+    -fx-font-family: "Cantarell Extra Bold";
+    -fx-font-size: 20 ;
+    -fx-fill: -fx-text-color ;
+}
+
+.progress-bar
+{
+    -fx-border-color: -fx-yellow ;
+    -fx-border-width: 3 ;
+    -fx-opacity: 5 ;
+    -fx-background-color: #073642 ;
+
+    -fx-border-radius: 5  ;
+    -fx-background-radius: 5 ;
+}
+
+.progress-bar > .track
+{
+    -fx-background-color : #073642 ;
+}
+
+.progress-bar > .bar
+{
+    -fx-background-radius: 5;
+    -fx-background-insets: 5;
+
+    -fx-opacity: 0.7 ;
+}
+
+.jfx-text-field
+{
+    -fx-text-fill: -fx-text-color ;
+}
+
+.text-area {
+    -fx-font-size: 17;
+    -fx-text-fill: #ffffff;
+}
+
+.text-area .content {
+    -fx-background-color: -fx-primary ;
+}

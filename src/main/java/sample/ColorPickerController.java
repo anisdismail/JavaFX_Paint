@@ -16,6 +16,11 @@ import java.text.NumberFormat;
 
 public class ColorPickerController
 {
+    // current selected colors
+
+    static Color currentColor = Color.BLACK;
+    static Rectangle previewColor;
+
     @FXML
     private JFXSlider alphaSlider;
 
@@ -46,57 +51,81 @@ public class ColorPickerController
     @FXML
     public void initialize()
     {
+        // set preview color
+        previewColor = previewColorPane;
+
         // init fields
-        previewColorPane.setFill(Color.RED);
+        previewColorPane.setFill(currentColor);
+
+        redSlider.setValue(0);
+        blueSlider.setValue(0);
+        greenSlider.setValue(0);
+        alphaSlider.setValue(255);
+
+        redTextField.setText("0");
+        blueTextField.setText("0");
+        greenTextField.setText("0");
+        alphaTextField.setText("255");
 
         // add textField listeners manually
 
         redTextField.textProperty().addListener((observableValue, oldValue , newValue ) ->
         {
             OnTextFieldChanged( redTextField , redSlider , oldValue , newValue );
+            ReEvaluatePickedColor();
         });
 
         blueTextField.textProperty().addListener((observableValue, oldValue , newValue ) ->
         {
             OnTextFieldChanged( blueTextField , blueSlider , oldValue , newValue );
+            ReEvaluatePickedColor();
         });
 
         greenTextField.textProperty().addListener((observableValue, oldValue , newValue ) ->
         {
             OnTextFieldChanged( greenTextField , greenSlider , oldValue , newValue );
+            ReEvaluatePickedColor();
         });
 
         alphaTextField.textProperty().addListener((observableValue, oldValue , newValue ) ->
         {
             OnTextFieldChanged( alphaTextField , alphaSlider , oldValue , newValue );
+            ReEvaluatePickedColor();
         });
 
         // add slider listeners manually
 
         redSlider.valueProperty().addListener(( observableValue, oldNumber , newNumber ) ->
         {
-            redTextField.setText(""+ newNumber);
+            redTextField.setText(""+ newNumber.intValue());
+            ReEvaluatePickedColor();
         });
 
         blueSlider.valueProperty().addListener((observableValue, oldNumber , newNumber ) ->
         {
-            blueTextField.setText(""+ newNumber);
+            blueTextField.setText(""+ newNumber.intValue());
+            ReEvaluatePickedColor();
         });
 
         greenSlider.valueProperty().addListener(( observableValue, oldNumber , newNumber ) ->
         {
-            greenTextField.setText(""+ newNumber);
+            greenTextField.setText(""+ newNumber.intValue());
+            ReEvaluatePickedColor();
         });
 
         alphaSlider.valueProperty().addListener(( observableValue, oldNumber , newNumber ) ->
         {
-            alphaTextField.setText(""+ newNumber);
+            alphaTextField.setText(""+newNumber.intValue());
+            ReEvaluatePickedColor();
         });
 
     }
     @FXML
     void OnDoneButtonPressed(ActionEvent event)
     {
+        // save the color
+        currentColor = CalculateColor();
+
         Main.secondaryStage.close();
     }
 
@@ -123,8 +152,20 @@ public class ColorPickerController
         }
     }
 
-    void ReEvaluatePickedColor()
+    void ReEvaluatePickedColor() // update the preview color pane
     {
-//        previewColorPane;
+        previewColorPane.setFill(CalculateColor());
     }
+
+    Color CalculateColor()
+    {
+        // pull the values from the sliders directly
+        return new Color(
+                /*red value */ (redSlider.getValue()/255) ,
+                /*blue value */ (greenSlider.getValue()/255) ,
+                /*green value */ (blueSlider.getValue()/255) ,
+                /*alpha value */ (alphaSlider.getValue()/255)
+        );
+    }
+
 }

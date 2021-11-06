@@ -3,13 +3,13 @@ package sample;
 import com.jfoenix.controls.JFXComboBox;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Modality;
 import javafx.stage.StageStyle;
 
@@ -21,6 +21,8 @@ import java.util.Stack;
 
 public class Controller
 {
+    private int MAX_UNDO_HISTORY_SIZE = 50;
+
     // consider moving it to a better place
     Stack<Image> undoStack = new Stack<>();
     GraphicsContext graphicsContext;
@@ -33,18 +35,20 @@ public class Controller
     @FXML
     private Canvas canvas;
 
-
     @FXML
     private JFXComboBox<String> penSizeComboBox;
 
     @FXML
+    private Rectangle previewWindowMainWindow;
+
+    @FXML
     public void initialize()
     {
+        previewWindowMainWindow.fillProperty().bind(ColorPickerController.previewColor.fillProperty());
+
         graphicsContext = canvas.getGraphicsContext2D();
         graphicsContext.setFill(Color.WHITE);
         graphicsContext.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-
-        Color colorChoice = Color.BLACK;
 
 
         // init the pen size combobox
@@ -58,7 +62,7 @@ public class Controller
                 e ->
                 {
                     pushToUndoStack();
-                    graphicsContext.setFill(colorChoice);
+                    graphicsContext.setFill(ColorPickerController.currentColor);
                     graphicsContext.fillRoundRect(e.getX() - 2, e.getY() - 2, 5 * currentScale, 5 * currentScale, 5, 5);
 
                 });
@@ -75,11 +79,7 @@ public class Controller
 
     }
 
-    public void pushToUndoStack()
-    {
-        Image snapshot = canvas.snapshot(null, null);
-        undoStack.push(snapshot);
-    }
+
 
     @FXML
     void onLoadButtonPressed(ActionEvent event)
@@ -149,6 +149,17 @@ public class Controller
     {
         graphicsContext.setFill(Color.WHITE);
         graphicsContext.clearRect(0,0,canvas.getWidth(),canvas.getHeight());
+    }
+
+    public void pushToUndoStack()
+    {
+        if ( undoStack.size() >= MAX_UNDO_HISTORY_SIZE )
+        {
+            undoStack.remove(0); // sacrifice oldest undo snapshot
+        }
+
+        Image snapshot = canvas.snapshot(null, null);
+        undoStack.push(snapshot);
     }
 
     @FXML

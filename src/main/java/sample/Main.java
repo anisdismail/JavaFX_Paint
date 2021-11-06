@@ -12,12 +12,10 @@ import java.util.Stack;
 
 public class Main extends Application
 {
-
     // primary stage
     static Stage primaryStage;
     static Stage secondaryStage;
     static Scene colorPickerScene;
-
 
     Stack<Image> undoStack = new Stack<>();
     Canvas canvas = new Canvas(500, 300);
@@ -30,21 +28,22 @@ public class Main extends Application
     public void start(Stage stage) throws Exception
     {
         // new stage for the popupwindow
-
-
-
-        Pane root = FXMLLoader.load(getClass().getResource("/GUI/MainPane.fxml"));
-        primaryStage.setTitle("Our Drawing App");
+        secondaryStage = new Stage();
 
         Pane colorPickerPane = FXMLLoader.load(getClass().getResource("/GUI/ColorPicker.fxml"));
         colorPickerScene = new Scene(colorPickerPane);
+
+        primaryStage = stage;
+        Pane root = FXMLLoader.load(getClass().getResource("/GUI/MainPane.fxml"));
+        primaryStage.setTitle("Our Drawing App");
 
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
 
     }
 
-    public void pushToUndoStack() {
+    public void pushToUndoStack()
+    {
         Image snapshot = canvas.snapshot(null, null);
         undoStack.push(snapshot);
     }

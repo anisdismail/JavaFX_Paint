@@ -7,12 +7,13 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.shape.Rectangle?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="772.0" prefWidth="1061.0" stylesheets="@Solarized.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <children>
       <AnchorPane layoutY="-1.0" prefHeight="111.0" prefWidth="1041.0" styleClass="tab-header-background" stylesheets="@Solarized.css" AnchorPane.bottomAnchor="651.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
          <children>
-            <GridPane layoutX="20.0" layoutY="20.0" prefHeight="74.0" prefWidth="265.0">
+            <GridPane layoutX="20.0" layoutY="20.0" prefHeight="74.0" prefWidth="177.0">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -27,17 +28,18 @@
                   <JFXButton onAction="#onLoadButtonPressed" prefHeight="24.0" prefWidth="137.0" text="Load" GridPane.rowIndex="2" />
                </children>
             </GridPane>
-            <JFXButton fx:id="ChangeColorButton" layoutX="852.0" layoutY="40.0" onAction="#OnChangeColorButtonPressed" text="Change Color" />
-            <JFXComboBox fx:id="penSizeComboBox" layoutX="324.0" layoutY="43.0" onAction="#OnMenuItemChanged" styleClass="text-field" />
-            <JFXButton layoutX="436.0" layoutY="40.0" onAction="#onUndoButtonPressed" text="Undo" />
-            <JFXButton layoutX="536.0" layoutY="40.0" text="Redo" />
-            <JFXButton layoutX="631.0" layoutY="40.0" onAction="#onClearButtonPressed" text="Clear" />
-            <JFXButton layoutX="724.0" layoutY="40.0" onAction="#onAddTextButtonPressed" text="Text" />
+            <JFXButton fx:id="ChangeColorButton" layoutX="769.0" layoutY="40.0" onAction="#OnChangeColorButtonPressed" text="Change Color" />
+            <JFXComboBox fx:id="penSizeComboBox" layoutX="197.0" layoutY="43.0" onAction="#OnMenuItemChanged" prefHeight="39.0" prefWidth="168.0" promptText="ssdd" style="-fx-text-fill: #ffffff;" />
+            <JFXButton layoutX="401.0" layoutY="40.0" onAction="#onUndoButtonPressed" prefHeight="45.0" prefWidth="85.0" text="Undo" />
+            <JFXButton layoutX="500.0" layoutY="40.0" text="Redo" />
+            <JFXButton layoutX="592.0" layoutY="40.0" onAction="#onClearButtonPressed" text="Clear" />
+            <JFXButton layoutX="683.0" layoutY="40.0" onAction="#onAddTextButtonPressed" text="Text" />
+            <Rectangle fx:id="previewWindowMainWindow" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="61.0" layoutX="952.0" layoutY="27.0" stroke="BLACK" strokeType="INSIDE" width="61.0" />
          </children>
       </AnchorPane>
       <AnchorPane layoutX="10.0" layoutY="136.0" prefHeight="631.0" prefWidth="1041.0" style="-fx-background-color: #ffffff;" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
          <children>
-            <Canvas fx:id="canvas" height="623.0" layoutX="-1.0" layoutY="-1.0" width="1041.0" />
+            <Canvas fx:id="canvas" height="623.0" layoutX="-1.0" layoutY="-1.0" style="-fx-text-fill: #ffffff;" width="1041.0" />
          </children></AnchorPane>
    </children>
 </AnchorPane>

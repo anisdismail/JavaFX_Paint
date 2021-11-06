@@ -48,8 +48,6 @@
     -fx-background-color: #3a112a;
 }
 
-
-
 .my-tab-pane
 {
     -fx-background-color: -fx-primary ;
@@ -107,4 +105,12 @@
 
 .text-area .content {
     -fx-background-color: -fx-primary ;
+}
+
+.combo-box-base
+{
+    -fx-background-color: white, white, white, white;
+    -fx-background-radius: 5, 5, 4, 3;
+    -fx-background-insets: 0 0 -1 0, 0, 1, 2;
+    -fx-padding: 0;
 }

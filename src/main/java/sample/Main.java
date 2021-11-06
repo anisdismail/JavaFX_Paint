@@ -30,21 +30,22 @@ public class Main extends Application
     public void start(Stage stage) throws Exception
     {
         // new stage for the popupwindow
-
-
-
-        Pane root = FXMLLoader.load(getClass().getResource("/GUI/MainPane.fxml"));
-        primaryStage.setTitle("Our Drawing App");
+        secondaryStage = new Stage();
 
         Pane colorPickerPane = FXMLLoader.load(getClass().getResource("/GUI/ColorPicker.fxml"));
         colorPickerScene = new Scene(colorPickerPane);
+
+        primaryStage = stage;
+        Pane root = FXMLLoader.load(getClass().getResource("/GUI/MainPane.fxml"));
+        primaryStage.setTitle("Our Drawing App");
 
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
 
     }
 
-    public void pushToUndoStack() {
+    public void pushToUndoStack()
+    {
         Image snapshot = canvas.snapshot(null, null);
         undoStack.push(snapshot);
     }

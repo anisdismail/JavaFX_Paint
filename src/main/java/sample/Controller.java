@@ -1,11 +1,13 @@
 package sample;
 
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
@@ -17,24 +19,21 @@ import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Random;
 import java.util.Stack;
 
-public class Controller
-{
-    private int MAX_UNDO_HISTORY_SIZE = 50;
+public class Controller {
 
     // consider moving it to a better place
     Stack<Image> undoStack = new Stack<>();
     GraphicsContext graphicsContext;
     String textVal = "test";
-
     boolean enterTextOnNextClick = false;
-    boolean eraserOnNextClick= false;
-    double currentScale = 1 ;
-
+    boolean eraserOnNextClick = false;
+    double currentScale = 1;
+    private int MAX_UNDO_HISTORY_SIZE = 50;
     @FXML
     private Canvas canvas;
-
     @FXML
     private JFXComboBox<String> penSizeComboBox;
 
@@ -42,8 +41,10 @@ public class Controller
     private Rectangle previewWindowMainWindow;
 
     @FXML
-    public void initialize()
-    {
+    private JFXButton eraserBtn;
+
+    @FXML
+    public void initialize() {
         previewWindowMainWindow.fillProperty().bind(ColorPickerController.previewColor.fillProperty());
 
         graphicsContext = canvas.getGraphicsContext2D();
@@ -53,7 +54,7 @@ public class Controller
 
         // init the pen size combobox
 
-        penSizeComboBox.getItems().addAll("Small","Medium","Large");
+        penSizeComboBox.getItems().addAll("Small", "Medium", "Large");
         penSizeComboBox.getSelectionModel().select(0); // first item
 
         // init some handlers
@@ -62,42 +63,36 @@ public class Controller
                 e ->
                 {
                     pushToUndoStack();
-                    if(!eraserOnNextClick) {
+                    if (!eraserOnNextClick) {
                         graphicsContext.setFill(ColorPickerController.currentColor);
-                        graphicsContext.fillRoundRect(e.getX() - 2, e.getY() - 2, 5 * currentScale, 5 * currentScale, 5, 5);
-                    }else{
+                        graphicsContext.fillOval(e.getX() - 2, e.getY() - 2, 5 * currentScale, 5 * currentScale);
+                    } else {
 
                         graphicsContext.clearRect(e.getX() - 2, e.getY() - 2, 5 * currentScale, 5 * currentScale);
                     }
 
                 });
 
-        canvas.addEventHandler(MouseEvent.MOUSE_CLICKED,  e ->
-                {
-                    if (enterTextOnNextClick)
-                    {
-                        pushToUndoStack();
-                        graphicsContext.fillText(textVal, e.getX(), e.getY());
-                        enterTextOnNextClick = false;
-                    }
-                });
+        canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, e ->
+        {
+            if (enterTextOnNextClick) {
+                pushToUndoStack();
+                graphicsContext.fillText(textVal, e.getX(), e.getY());
+                enterTextOnNextClick = false;
+            }
+        });
 
     }
 
 
-
     @FXML
-    void onLoadButtonPressed(ActionEvent event)
-    {
+    void onLoadButtonPressed(ActionEvent event) {
         String loadPath = Utilities.BrowseForFile("Select File to Load");
 
-        try
-        {
+        try {
             Image image = new Image(new FileInputStream(loadPath));
             graphicsContext.drawImage(image, 0, 0);
-        }
-        catch (IOException ex)
-        {
+        } catch (IOException ex) {
             System.out.println("failed to load saved filed file");
             ex.printStackTrace();
         }
@@ -105,38 +100,27 @@ public class Controller
     }
 
     @FXML
-    void onSaveButtonPressed(ActionEvent event)
-    {
+    void onSaveButtonPressed(ActionEvent event) {
         String savePath = Utilities.SaveFileLocation("Select location to Save");
-        Image img = canvas.snapshot(null , null);
-        try
-        {
-                ImageIO.write(SwingFXUtils.fromFXImage(img, null), "png", new File(savePath));
-        }
-        catch (IOException ex)
-        {
+        Image img = canvas.snapshot(null, null);
+        try {
+            ImageIO.write(SwingFXUtils.fromFXImage(img, null), "png", new File(savePath));
+        } catch (IOException ex) {
             System.out.println("failed to save file");
             ex.printStackTrace();
         }
     }
 
     @FXML
-    void OnChangeColorButtonPressed(ActionEvent event)
-    {
+    void OnChangeColorButtonPressed(ActionEvent event) {
         // create a new popup window
-
-        Main.secondaryStage.initStyle(StageStyle.UNDECORATED);
-        Main.secondaryStage.initModality(Modality.APPLICATION_MODAL);
-        Main.secondaryStage.initOwner(Main.primaryStage);
         Main.secondaryStage.setScene(Main.colorPickerScene);
         Main.secondaryStage.show();
     }
 
     @FXML
-    void OnMenuItemChanged(ActionEvent event)
-    {
-        switch (penSizeComboBox.getValue())
-        {
+    void OnMenuItemChanged(ActionEvent event) {
+        switch (penSizeComboBox.getValue()) {
             case "Small":
                 currentScale = 1;
                 break;
@@ -150,16 +134,13 @@ public class Controller
     }
 
     @FXML
-    void onClearButtonPressed(ActionEvent event)
-    {
+    void onClearButtonPressed(ActionEvent event) {
         graphicsContext.setFill(Color.WHITE);
-        graphicsContext.clearRect(0,0,canvas.getWidth(),canvas.getHeight());
+        graphicsContext.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
     }
 
-    public void pushToUndoStack()
-    {
-        if ( undoStack.size() >= MAX_UNDO_HISTORY_SIZE )
-        {
+    public void pushToUndoStack() {
+        if (undoStack.size() >= MAX_UNDO_HISTORY_SIZE) {
             undoStack.remove(0); // sacrifice oldest undo snapshot
         }
 
@@ -168,8 +149,7 @@ public class Controller
     }
 
     @FXML
-    void onUndoButtonPressed(ActionEvent event)
-    {
+    void onUndoButtonPressed(ActionEvent event) {
         if (!undoStack.empty()) // any action to be undone ?
         {
             Image undoImage = undoStack.pop();
@@ -178,13 +158,20 @@ public class Controller
     }
 
     @FXML
-    void onAddTextButtonPressed(ActionEvent event)
-    {
+    void onAddTextButtonPressed(ActionEvent event) {
         enterTextOnNextClick = true; // next click on canvas will let user enter text
     }
 
     @FXML
     void onEraserButtonPressed(ActionEvent actionEvent) {
-    eraserOnNextClick= !eraserOnNextClick;
+        eraserOnNextClick = !eraserOnNextClick;
+
     }
+    @FXML
+    public void QuickDrawBtnPressed(ActionEvent actionEvent) {
+        Main.secondaryStage.setScene(Main.startGameScene);
+        Main.secondaryStage.show();
+
+    }
+
 }

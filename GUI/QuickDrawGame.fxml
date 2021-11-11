@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@Solarized.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.QuickDrawController">
+   <children>
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="209.0" layoutY="88.0" prefHeight="50.0" prefWidth="183.0" text="Let's Draw " textFill="WHITE">
+         <font>
+            <Font name="Comic Sans MS Bold Italic" size="21.0" />
+         </font>
+      </Label>
+      <Label fx:id="sketchPromptId" alignment="CENTER" contentDisplay="CENTER" layoutX="239.0" layoutY="157.0" prefHeight="50.0" prefWidth="122.0" textFill="WHITE">
+         <font>
+            <Font name="Comic Sans MS Bold Italic" size="32.0" />
+         </font>
+
+      </Label>
+
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="203.0" layoutY="232.0" prefHeight="50.0" prefWidth="183.0" text="in 20 seconds!" textFill="WHITE">
+         <font>
+            <Font name="Comic Sans MS Bold Italic" size="21.0" />
+         </font>
+      </Label>
+      <JFXButton layoutX="250.0" layoutY="293.0" onAction="#StartButtonPressed" text="Got it!">
+         <font>
+            <Font name="Comic Sans MS Bold" size="20.0" />
+         </font>
+      </JFXButton>
+   </children>
+</AnchorPane>

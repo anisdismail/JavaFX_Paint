@@ -54,15 +54,15 @@ public class RunModel {
 
     static TFloat32 preprocess(BufferedImage sourceImage, int imageHeight, int imageWidth, int imageChannels) {
         Shape imageShape = Shape.of(1, imageHeight, imageWidth, imageChannels);
-
         return TFloat32.tensorOf(imageShape, tensor -> {
             // Scale the image to required dimensions if needed
             BufferedImage image = new BufferedImage(imageWidth,
-                    imageHeight, sourceImage.getType());
+                    imageHeight, BufferedImage.TYPE_BYTE_GRAY);
 
             if (sourceImage.getWidth() != imageWidth || sourceImage.getHeight() != imageHeight) {
                 // scales the input image to the output image
                 Graphics2D g2d = image.createGraphics();
+                g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
                 g2d.drawImage(sourceImage, 0, 0, imageWidth, imageHeight, null);
                 g2d.dispose();
 
@@ -79,23 +79,11 @@ public class RunModel {
             int i = 0;
             for (int h = 0; h < imageHeight; ++h) {
                 for (int w = 0; w < imageWidth; ++w) {
-                    int p = image.getRGB(h, w);
 
-                    int a = (p >> 24) & 0xff;
-                    int r = (p >> 16) & 0xff;
-                    int g = (p >> 8) & 0xff;
-                    int b = p & 0xff;
+                    tensor.setFloat(1 - (image.getData().getDataBuffer().getElemFloat(i++) / 255), 0, h, w, 0);
 
-                    //calculate average
-                    int avg = (r + g + b) / 3;
-
-                    // tensor.setFloat((float) avg/(255.0f), 0, h, w, 0);
-
-                    tensor.setFloat(1-(image.getData().getDataBuffer().getElemFloat(i) / 255), 0, h, w, 0);
-                    i += 3;
                 }
             }
-
 
 
         });

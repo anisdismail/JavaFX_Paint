@@ -7,24 +7,23 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.stage.Modality;
-import javafx.stage.StageStyle;
+import javafx.scene.text.Text;
 
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Random;
 import java.util.Stack;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Controller {
-
     // consider moving it to a better place
+    static final int TIME_TO_PLAY = 20;
     Stack<Image> undoStack = new Stack<>();
     GraphicsContext graphicsContext;
     String textVal = "test";
@@ -43,6 +42,54 @@ public class Controller {
     @FXML
     private JFXButton eraserBtn;
 
+    public static void launchQuickDrawGame() {
+        RunModel.loadModel();
+        Timer timer = new Timer();
+        int now = TIME_TO_PLAY;
+        TimerTask task = new TimerTask() {
+            int now = TIME_TO_PLAY;
+
+            public void run() {
+
+                //timerLabel.setText(String.valueOf(now));
+                now--;
+                try {
+                    RunModel.predict();
+                } catch (IOException e) {
+
+                }
+                if (now < 0) {
+                    timer.cancel();
+                }
+            }
+
+
+        };
+        timer.schedule(task, 0, 1000);
+
+/*
+        final Integer[] timeSeconds = {TIME_TO_PLAY};
+        Timeline timeline;
+        // update timerLabel
+        timerLabel.setText(timeSeconds[0].toString());
+        timeline = new Timeline();
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        // KeyFrame event handler
+        timeline.getKeyFrames().add(
+                new KeyFrame(Duration.seconds(1),
+                        (EventHandler<ActionEvent>) event -> {
+                            timeSeconds[0]--;
+                            // update timerLabel
+                            timerLabel.setText(
+                                    timeSeconds[0].toString());
+                            if (timeSeconds[0] <= 0) {
+                                timeline.stop();
+                            }
+                        }));
+        timeline.playFromStart();
+         */
+    }
+
     @FXML
     public void initialize() {
         previewWindowMainWindow.fillProperty().bind(ColorPickerController.previewColor.fillProperty());
@@ -51,12 +98,10 @@ public class Controller {
         graphicsContext.setFill(Color.WHITE);
         graphicsContext.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
-
         // init the pen size combobox
 
         penSizeComboBox.getItems().addAll("Small", "Medium", "Large");
         penSizeComboBox.getSelectionModel().select(0); // first item
-
         // init some handlers
 
         canvas.addEventHandler(MouseEvent.MOUSE_DRAGGED,
@@ -82,8 +127,8 @@ public class Controller {
             }
         });
 
-    }
 
+    }
 
     @FXML
     void onLoadButtonPressed(ActionEvent event) {
@@ -167,6 +212,7 @@ public class Controller {
         eraserOnNextClick = !eraserOnNextClick;
 
     }
+
     @FXML
     public void QuickDrawBtnPressed(ActionEvent actionEvent) {
         Main.secondaryStage.setScene(Main.startGameScene);

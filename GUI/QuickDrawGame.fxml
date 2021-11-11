@@ -12,7 +12,7 @@
             <Font name="Comic Sans MS Bold Italic" size="21.0" />
          </font>
       </Label>
-      <Label fx:id="sketchPromptId" alignment="CENTER" contentDisplay="CENTER" layoutX="239.0" layoutY="157.0" prefHeight="50.0" prefWidth="122.0" textFill="WHITE">
+      <Label fx:id="sketchPromptId" alignment="CENTER" contentDisplay="CENTER" layoutX="183.0" layoutY="164.0" prefHeight="50.0" prefWidth="223.0" textFill="WHITE">
          <font>
             <Font name="Comic Sans MS Bold Italic" size="32.0" />
          </font>

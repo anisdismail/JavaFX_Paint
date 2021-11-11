@@ -20,7 +20,6 @@ public class QuickDrawController {
     public void StartButtonPressed(ActionEvent actionEvent) {
         populateLabel();
         Main.secondaryStage.close();
-        //Main.primaryStage.
     }
     private void populateLabel(){
         Random rand= new Random();

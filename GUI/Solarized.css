@@ -15,11 +15,11 @@
 
 .button
 {
-    -fx-text-fill: -fx-text-color  ;
+    -fx-text-fill: #000000  ;
     -fx-border-color: #c9d423;
     -fx-border-radius: 20px ;
     -fx-background-radius: 20px ;
-    -fx-background-color: #073642 ;
+    -fx-background-color: #2e889b;
     -fx-border-width: 3;
 }
 
@@ -98,7 +98,8 @@
     -fx-text-fill: -fx-text-color ;
 }
 
-.text-area {
+.text-area
+{
     -fx-font-size: 17;
     -fx-text-fill: #ffffff;
 }

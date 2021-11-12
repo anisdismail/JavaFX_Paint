@@ -6,8 +6,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="Project2_COEApp_AnisIsmail_RobinKaraa" />
+        <module name="JavaFX_Paint" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="JavaFX_Paint" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>

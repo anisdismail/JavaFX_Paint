@@ -21,6 +21,8 @@ public class Main extends Application
     static Stage secondaryStage;
     static Scene colorPickerScene;
     static Scene startGameScene;
+    static Pane colorPickerPane;
+    static Pane startGamePane;
 
     Stack<Image> undoStack = new Stack<>();
     Canvas canvas = new Canvas(500, 300);
@@ -39,10 +41,10 @@ public class Main extends Application
         secondaryStage.initModality(Modality.APPLICATION_MODAL);
         secondaryStage.initOwner(Main.primaryStage);
 
-        Pane colorPickerPane = FXMLLoader.load(getClass().getResource("/GUI/ColorPicker.fxml"));
+        colorPickerPane = FXMLLoader.load(getClass().getResource("/GUI/ColorPicker.fxml"));
         colorPickerScene = new Scene(colorPickerPane);
 
-        Pane startGamePane = FXMLLoader.load(getClass().getResource("/GUI/QuickDrawGame.fxml"));
+        startGamePane = FXMLLoader.load(getClass().getResource("/GUI/GuessPane.fxml"));
         startGameScene = new Scene(startGamePane);
 
         primaryStage = stage;

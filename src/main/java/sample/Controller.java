@@ -5,8 +5,10 @@ import com.jfoenix.controls.JFXComboBox;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.ImageCursor;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -93,58 +95,13 @@ public class Controller
     @FXML
     private JFXButton addTextButton;
 
-    public static void launchQuickDrawGame()
-    {
-        RunModel.loadModel();
-        Timer timer = new Timer();
-        int now = TIME_TO_PLAY;
-        TimerTask task = new TimerTask() {
-            int now = TIME_TO_PLAY;
 
-            public void run() {
-
-                //timerLabel.setText(String.valueOf(now));
-                now--;
-                try {
-                    RunModel.predict();
-                } catch (IOException e) {
-
-                }
-                if (now < 0) {
-                    timer.cancel();
-                }
-            }
-
-
-        };
-        timer.schedule(task, 0, 1000);
-
-/*
-        final Integer[] timeSeconds = {TIME_TO_PLAY};
-        Timeline timeline;
-        // update timerLabel
-        timerLabel.setText(timeSeconds[0].toString());
-        timeline = new Timeline();
-        timeline.setCycleCount(Timeline.INDEFINITE);
-        // KeyFrame event handler
-        timeline.getKeyFrames().add(
-                new KeyFrame(Duration.seconds(1),
-                        (EventHandler<ActionEvent>) event -> {
-                            timeSeconds[0]--;
-                            // update timerLabel
-                            timerLabel.setText(
-                                    timeSeconds[0].toString());
-                            if (timeSeconds[0] <= 0) {
-                                timeline.stop();
-                            }
-                        }));
-        timeline.playFromStart();
-         */
-    }
 
     @FXML
     public void initialize() throws IOException
     {
+        RunModel.loadModel();
+
         previewWindowMainWindow.fillProperty().bind(ColorPickerController.previewColor.fillProperty());
 
         graphicsContext = canvas.getGraphicsContext2D();
@@ -224,6 +181,7 @@ public class Controller
         String loadPath = Utilities.BrowseForFile("Select File to Load");
 
         try {
+            assert loadPath != null;
             Image image = new Image(new FileInputStream(loadPath));
             graphicsContext.drawImage(image, 0, 0);
         } catch (IOException ex) {
@@ -233,10 +191,7 @@ public class Controller
 
     }
 
-    @FXML
-    void onSaveButtonPressed(ActionEvent event)
-    {
-        String savePath = Utilities.SaveFileLocation("Select location to Save");
+    private void saveImage(String savePath) {
         Image img = canvas.snapshot(null, null);
         try {
             ImageIO.write(SwingFXUtils.fromFXImage(img, null), "png", new File(savePath));
@@ -244,6 +199,13 @@ public class Controller
             System.out.println("failed to save file");
             ex.printStackTrace();
         }
+
+    }
+
+    @FXML
+    void onSaveButtonPressed(ActionEvent event) {
+        String savePath = Utilities.SaveFileLocation("Select location to Save");
+        saveImage(savePath);
     }
 
     @FXML
@@ -278,7 +240,7 @@ public class Controller
         graphicsContext.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
     }
 
-    public void pushToUndoStack()
+    private void pushToUndoStack()
     {
         if (undoStack.size() >= MAX_UNDO_HISTORY_SIZE) {
             undoStack.remove(0); // sacrifice oldest undo snapshot
@@ -325,8 +287,14 @@ public class Controller
     }
 
     @FXML
-    public void QuickDrawBtnPressed(ActionEvent actionEvent)
-    {
+    public void GuessBtnPressed(ActionEvent actionEvent) throws IOException {
+        String savePath = "./temp/test.png";
+        saveImage(savePath);
+        String predClass = RunModel.predict(savePath);
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/GUI/GuessPane.fxml"));
+        Parent root = loader.load();
+        GuessController controller = loader.getController();
+        controller.setName(predClass);
         Main.secondaryStage.setScene(Main.startGameScene);
         Main.secondaryStage.show();
     }
@@ -334,6 +302,7 @@ public class Controller
     public void hookInto( Scene scene )
     {
         mainScene = scene; // save it for later
+
 
         scene.setOnKeyPressed(keyEvent ->
         {

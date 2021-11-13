@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="304.0" prefWidth="344.0" stylesheets="@Solarized.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.GuessController">
+   <children>
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="84.0" layoutY="26.0" prefHeight="50.0" prefWidth="183.0" text="That is a " textFill="WHITE">
+         <font>
+            <Font name="Comic Sans MS Bold Italic" size="21.0" />
+         </font>
+      </Label>
+
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="78.0" layoutY="159.0" prefHeight="50.0" prefWidth="183.0" text="Right?" textFill="WHITE">
+         <font>
+            <Font name="Comic Sans MS Bold Italic" size="21.0" />
+         </font>
+      </Label>
+      <JFXButton layoutX="133.0" layoutY="228.0" onAction="#StartButtonPressed" text="Yes!">
+         <font>
+            <Font name="Comic Sans MS Bold" size="20.0" />
+         </font>
+      </JFXButton>
+   </children>
+</AnchorPane>

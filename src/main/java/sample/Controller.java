@@ -6,8 +6,6 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
-import javafx.scene.ImageCursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -16,9 +14,6 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
@@ -28,8 +23,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Stack;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class Controller
 {
@@ -287,15 +280,13 @@ public class Controller
     }
 
     @FXML
-    public void GuessBtnPressed(ActionEvent actionEvent) throws IOException {
+    public void GuessBtnPressed(ActionEvent actionEvent) throws IOException
+    {
         String savePath = "./temp/test.png";
         saveImage(savePath);
         String predClass = RunModel.predict(savePath);
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/GUI/GuessPane.fxml"));
-        Parent root = loader.load();
-        GuessController controller = loader.getController();
-        controller.setName(predClass);
-        Main.secondaryStage.setScene(Main.startGameScene);
+        Main.currentGuessController.setName(predClass);
+        Main.secondaryStage.setScene(Main.PredictorScene);
         Main.secondaryStage.show();
     }
 

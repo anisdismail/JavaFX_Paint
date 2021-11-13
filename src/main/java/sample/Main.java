@@ -3,15 +3,12 @@ package sample;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-
-import java.util.Stack;
+import org.sonatype.plexus.components.sec.dispatcher.model.io.xpp3.SecurityConfigurationXpp3Reader;
 
 public class Main extends Application
 {
@@ -20,12 +17,15 @@ public class Main extends Application
     static Stage primaryStage;
     static Stage secondaryStage;
     static Scene colorPickerScene;
-    static Scene startGameScene;
-    static Pane colorPickerPane;
-    static Pane startGamePane;
+    static Scene PredictorScene;
 
-    Stack<Image> undoStack = new Stack<>();
-    Canvas canvas = new Canvas(500, 300);
+    static Pane colorPickerPane;
+    static Pane predictorPane;
+
+    // Controllers
+
+    static GuessController currentGuessController;
+
 
     public static void main(String[] args)
     {
@@ -44,8 +44,15 @@ public class Main extends Application
         colorPickerPane = FXMLLoader.load(getClass().getResource("/GUI/ColorPicker.fxml"));
         colorPickerScene = new Scene(colorPickerPane);
 
-        startGamePane = FXMLLoader.load(getClass().getResource("/GUI/GuessPane.fxml"));
-        startGameScene = new Scene(startGamePane);
+        predictorPane = FXMLLoader.load(getClass().getResource("/GUI/GuessPane.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/GUI/GuessPane.fxml"));
+        AnchorPane predictorAnchorPane = new AnchorPane();
+        loader.load();
+        predictorAnchorPane = loader.getRoot();
+        PredictorScene = new Scene(predictorAnchorPane);
+
+        // assign the controller
+        currentGuessController = loader.getController();
 
         primaryStage = stage;
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/GUI/MainPane.fxml"));

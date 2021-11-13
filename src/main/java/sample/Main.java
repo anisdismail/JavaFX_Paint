@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -12,8 +13,10 @@ import javafx.stage.StageStyle;
 
 import java.util.Stack;
 
-public class Main extends Application {
+public class Main extends Application
+{
     // primary stage
+
     static Stage primaryStage;
     static Stage secondaryStage;
     static Scene colorPickerScene;
@@ -22,12 +25,14 @@ public class Main extends Application {
     Stack<Image> undoStack = new Stack<>();
     Canvas canvas = new Canvas(500, 300);
 
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
         launch(args);
     }
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) throws Exception
+    {
         // new stage for the popup window
         secondaryStage = new Stage();
         secondaryStage.initStyle(StageStyle.UNDECORATED);
@@ -41,11 +46,17 @@ public class Main extends Application {
         startGameScene = new Scene(startGamePane);
 
         primaryStage = stage;
-        Pane root = FXMLLoader.load(getClass().getResource("/GUI/MainPane.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/GUI/MainPane.fxml"));
+        AnchorPane root = new AnchorPane();
+        fxmlLoader.load();
+
+        root = fxmlLoader.getRoot();
         primaryStage.setTitle("Our Drawing App");
 
-        primaryStage.setScene(new Scene(root));
-        primaryStage.show();
+        Scene mainScene = new Scene(root);
+        (( Controller ) fxmlLoader.getController()).hookInto(mainScene);
 
+        primaryStage.setScene(mainScene);
+        primaryStage.show();
     }
 }

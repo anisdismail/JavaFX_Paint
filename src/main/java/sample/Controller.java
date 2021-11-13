@@ -5,10 +5,18 @@ import com.jfoenix.controls.JFXComboBox;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.scene.ImageCursor;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
@@ -21,16 +29,50 @@ import java.util.Stack;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class Controller {
+public class Controller
+{
+
     // consider moving it to a better place
     static final int TIME_TO_PLAY = 20;
+
     Stack<Image> undoStack = new Stack<>();
+    Stack<Image> redoStack = new Stack<>();
+
     GraphicsContext graphicsContext;
-    String textVal = "test";
+
     boolean enterTextOnNextClick = false;
     boolean eraserOnNextClick = false;
+    boolean enteringTextRightNow = false;
+
+    Text currentHookedLabel;
+    String currentText = "" ;
+
     double currentScale = 1;
     private int MAX_UNDO_HISTORY_SIZE = 50;
+
+    private Scene mainScene;
+
+    // CURRENT SELECTED TOOL
+
+    enum Tool
+    {
+        PEN,
+        ERASER
+    }
+
+    Tool currentTool = Tool.PEN ;
+
+    // CURRENT EDITOR MODE
+
+    enum Mode
+    {
+        NORMAL, // drawing...
+        ADD_TEXT, // adding a text label
+        WRITING_TEXT,// writing to a text label
+    }
+
+    Mode currentMode = Mode.NORMAL; // drawing is the default mode
+
     @FXML
     private Canvas canvas;
     @FXML
@@ -40,9 +82,19 @@ public class Controller {
     private Rectangle previewWindowMainWindow;
 
     @FXML
-    private JFXButton eraserBtn;
+    private JFXButton selectPenButton;
 
-    public static void launchQuickDrawGame() {
+    @FXML
+    private JFXButton selectEraserButton;
+
+    @FXML
+    private AnchorPane canvasAnchorPane;
+
+    @FXML
+    private JFXButton addTextButton;
+
+    public static void launchQuickDrawGame()
+    {
         RunModel.loadModel();
         Timer timer = new Timer();
         int now = TIME_TO_PLAY;
@@ -91,47 +143,84 @@ public class Controller {
     }
 
     @FXML
-    public void initialize() {
+    public void initialize() throws IOException
+    {
         previewWindowMainWindow.fillProperty().bind(ColorPickerController.previewColor.fillProperty());
 
         graphicsContext = canvas.getGraphicsContext2D();
+
         graphicsContext.setFill(Color.WHITE);
         graphicsContext.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        graphicsContext.setFill(Color.BLACK);
+
 
         // init the pen size combobox
 
         penSizeComboBox.getItems().addAll("Small", "Medium", "Large");
         penSizeComboBox.getSelectionModel().select(0); // first item
+
+
         // init some handlers
-
-        canvas.addEventHandler(MouseEvent.MOUSE_DRAGGED,
-                e ->
-                {
-                    pushToUndoStack();
-                    if (!eraserOnNextClick) {
-                        graphicsContext.setFill(ColorPickerController.currentColor);
-                        graphicsContext.fillOval(e.getX() - 2, e.getY() - 2, 5 * currentScale, 5 * currentScale);
-                    } else {
-
-                        graphicsContext.clearRect(e.getX() - 2, e.getY() - 2, 5 * currentScale, 5 * currentScale);
-                    }
-
-                });
-
-        canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, e ->
+        canvas.addEventHandler(MouseEvent.MOUSE_DRAGGED, e ->
         {
-            if (enterTextOnNextClick) {
+            if ( currentMode == Mode.NORMAL ) // paint if we are in paint mode
+            {
                 pushToUndoStack();
-                graphicsContext.fillText(textVal, e.getX(), e.getY());
-                enterTextOnNextClick = false;
+                UseCurrentTool( e.getX() , e.getY() );
             }
         });
 
+        canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, e ->
+        {
+            if( currentMode == Mode.NORMAL )
+                UseCurrentTool( e.getX() , e.getY() );
+            else if ( currentMode == Mode.ADD_TEXT )
+            {
+                // add the text label that the user will subsequently write to
+                AddWritingLabel( e.getX() , e.getY() );
 
+                // change mode
+                currentMode = Mode.WRITING_TEXT;
+            }
+        });
+    }
+
+    void UseCurrentTool( double x , double y )
+    {
+        if ( currentTool == Tool.PEN ) // if pen ,draw
+        {
+            DrawOval( x , y );
+        }
+        else // if eraser, erase ,no shit!
+        {
+            graphicsContext.clearRect(x - 2, y - 2, 5 * currentScale, 5 * currentScale);
+        }
+    }
+
+    void AddWritingLabel( double x , double y )
+    {
+        currentText = "" ;
+        currentHookedLabel = new Text(currentText ); // get written to
+
+        canvasAnchorPane.getChildren().add(currentHookedLabel);
+        currentHookedLabel.setLayoutX(x);
+        currentHookedLabel.setLayoutY(y);
+    }
+
+    void DestroyWritingLabel()
+    {
+        canvasAnchorPane.getChildren().remove(currentHookedLabel);
+    }
+
+    void DrawOval ( double x , double y ) // draw at mouse X and Y
+    {
+        graphicsContext.setFill(ColorPickerController.currentColor);
+        graphicsContext.fillOval(x - 2, y - 2, 5 * currentScale, 5 * currentScale);
     }
 
     @FXML
-    void onLoadButtonPressed(ActionEvent event) {
+    void onLoadButtonPressed(ActionEvent event)
+    {
         String loadPath = Utilities.BrowseForFile("Select File to Load");
 
         try {
@@ -145,7 +234,8 @@ public class Controller {
     }
 
     @FXML
-    void onSaveButtonPressed(ActionEvent event) {
+    void onSaveButtonPressed(ActionEvent event)
+    {
         String savePath = Utilities.SaveFileLocation("Select location to Save");
         Image img = canvas.snapshot(null, null);
         try {
@@ -157,15 +247,18 @@ public class Controller {
     }
 
     @FXML
-    void OnChangeColorButtonPressed(ActionEvent event) {
+    void OnChangeColorButtonPressed(ActionEvent event)
+    {
         // create a new popup window
         Main.secondaryStage.setScene(Main.colorPickerScene);
         Main.secondaryStage.show();
     }
 
     @FXML
-    void OnMenuItemChanged(ActionEvent event) {
-        switch (penSizeComboBox.getValue()) {
+    void OnMenuItemChanged(ActionEvent event)
+    {
+        switch (penSizeComboBox.getValue())
+        {
             case "Small":
                 currentScale = 1;
                 break;
@@ -179,12 +272,14 @@ public class Controller {
     }
 
     @FXML
-    void onClearButtonPressed(ActionEvent event) {
+    void onClearButtonPressed(ActionEvent event)
+    {
         graphicsContext.setFill(Color.WHITE);
         graphicsContext.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
     }
 
-    public void pushToUndoStack() {
+    public void pushToUndoStack()
+    {
         if (undoStack.size() >= MAX_UNDO_HISTORY_SIZE) {
             undoStack.remove(0); // sacrifice oldest undo snapshot
         }
@@ -193,8 +288,22 @@ public class Controller {
         undoStack.push(snapshot);
     }
 
+    //TODO: need to add some indicator as to what tool is currently selected
     @FXML
-    void onUndoButtonPressed(ActionEvent event) {
+    void onSelectEraserButtonPressed ( ActionEvent event )
+    {
+        currentTool = Tool.ERASER;
+    }
+
+    @FXML
+    void onSelectPenButtonPressed( ActionEvent event )
+    {
+        currentTool = Tool.PEN;
+    }
+
+    @FXML
+    void onUndoButtonPressed(ActionEvent event)
+    {
         if (!undoStack.empty()) // any action to be undone ?
         {
             Image undoImage = undoStack.pop();
@@ -203,21 +312,60 @@ public class Controller {
     }
 
     @FXML
-    void onAddTextButtonPressed(ActionEvent event) {
-        enterTextOnNextClick = true; // next click on canvas will let user enter text
-    }
-
-    @FXML
-    void onEraserButtonPressed(ActionEvent actionEvent) {
-        eraserOnNextClick = !eraserOnNextClick;
+    void onRedoButtonPressed ( ActionEvent event )
+    {
 
     }
 
     @FXML
-    public void QuickDrawBtnPressed(ActionEvent actionEvent) {
+    void onAddTextButtonPressed(ActionEvent event)
+    {
+        currentMode = Mode.ADD_TEXT;
+        canvasAnchorPane.requestFocus(); // remove focus from button to be able to detect a pressed SPACE
+    }
+
+    @FXML
+    public void QuickDrawBtnPressed(ActionEvent actionEvent)
+    {
         Main.secondaryStage.setScene(Main.startGameScene);
         Main.secondaryStage.show();
+    }
 
+    public void hookInto( Scene scene )
+    {
+        mainScene = scene; // save it for later
+
+        scene.setOnKeyPressed(keyEvent ->
+        {
+            if ( currentMode == Mode.WRITING_TEXT )
+            {
+                if ( keyEvent.getCode() == KeyCode.ESCAPE ) // if ESCAPE, stop writing text
+                {
+                    System.out.println("fill was set to " + currentText);
+                    // exit text entering mode, and write the text to the canvas
+                    graphicsContext.setFont(currentHookedLabel.getFont());
+
+                    graphicsContext.fillText( currentHookedLabel.getText() ,
+                            currentHookedLabel.getLayoutX(), currentHookedLabel.getLayoutY());
+
+                    // remove label
+                    DestroyWritingLabel();
+                    // change mode
+                    currentMode = Mode.NORMAL;
+                }
+                else if ( keyEvent.getCode() == KeyCode.BACK_SPACE ) // handle backspace manually
+                {
+                    if ( currentText.length() > 0 )
+                        currentText = currentText.substring(0,currentText.length()-1);
+                    // update
+                    currentHookedLabel.setText( currentText );
+                }
+                else // let the user write characters
+                {
+                    currentHookedLabel.setText( currentText += keyEvent.getText());
+                }
+            }
+        });
     }
 
 }

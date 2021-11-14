@@ -5,10 +5,6 @@ import com.jfoenix.controls.JFXComboBox;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
-import javafx.scene.ImageCursor;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -16,9 +12,6 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
@@ -28,23 +21,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Stack;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class Controller
 {
-
     // consider moving it to a better place
     static final int TIME_TO_PLAY = 20;
 
     Stack<Image> undoStack = new Stack<>();
-    Stack<Image> redoStack = new Stack<>();
 
     GraphicsContext graphicsContext;
-
-    boolean enterTextOnNextClick = false;
-    boolean eraserOnNextClick = false;
-    boolean enteringTextRightNow = false;
 
     Text currentHookedLabel;
     String currentText = "" ;
@@ -53,6 +38,18 @@ public class Controller
     private int MAX_UNDO_HISTORY_SIZE = 50;
 
     private Scene mainScene;
+
+    // for drawing lines
+
+    double lineFirstPointX = 0 , lineFirstPointY = 0;
+
+    // for drawing rects
+
+    double rectFirstPointX = 0 , rectFirstPointY = 0;
+
+    // for drawing circles
+
+    double circleFirstPointX = 0 , circleFirstPointY = 0;
 
     // CURRENT SELECTED TOOL
 
@@ -71,6 +68,15 @@ public class Controller
         NORMAL, // drawing...
         ADD_TEXT, // adding a text label
         WRITING_TEXT,// writing to a text label
+
+        ADD_LINE_FIRST_POINT,
+        ADD_LINE_SECOND_POINT,
+
+        ADD_RECT_FIRST_POINT,
+        ADD_RECT_SECOND_POINT,
+
+        ADD_CIRCLE_FIRST_POINT,
+        ADD_CIRCLE_SECOND_POINT,
     }
 
     Mode currentMode = Mode.NORMAL; // drawing is the default mode
@@ -95,6 +101,8 @@ public class Controller
     @FXML
     private JFXButton addTextButton;
 
+    @FXML
+    private JFXButton AddLineButton;
 
 
     @FXML
@@ -106,19 +114,15 @@ public class Controller
 
         graphicsContext = canvas.getGraphicsContext2D();
 
-        graphicsContext.setFill(Color.WHITE);
-        graphicsContext.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        graphicsContext.setFill(Color.BLACK);
-
-
+        ClearCanvas();
         // init the pen size combobox
 
         penSizeComboBox.getItems().addAll("Small", "Medium", "Large");
         penSizeComboBox.getSelectionModel().select(0); // first item
 
-
         // init some handlers
-        canvas.addEventHandler(MouseEvent.MOUSE_DRAGGED, e ->
+
+        canvas.addEventHandler(MouseEvent.MOUSE_DRAGGED , e ->
         {
             if ( currentMode == Mode.NORMAL ) // paint if we are in paint mode
             {
@@ -139,7 +143,68 @@ public class Controller
                 // change mode
                 currentMode = Mode.WRITING_TEXT;
             }
+            else if ( currentMode == Mode.ADD_LINE_FIRST_POINT )
+            {
+                lineFirstPointX = e.getX();
+                lineFirstPointY = e.getY();
+                currentMode = Mode.ADD_LINE_SECOND_POINT;
+            }
+            else if ( currentMode == Mode.ADD_LINE_SECOND_POINT )
+            {
+                pushToUndoStack();
+                graphicsContext.strokeLine( lineFirstPointX , lineFirstPointY , e.getX() , e.getY() );
+                currentMode = Mode.ADD_LINE_FIRST_POINT;
+            }
+            else if ( currentMode == Mode.ADD_RECT_FIRST_POINT )
+            {
+                rectFirstPointX = e.getX();
+                rectFirstPointY = e.getY();
+                currentMode = Mode.ADD_RECT_SECOND_POINT; // next click is to add second point
+            }
+            else if ( currentMode == Mode.ADD_RECT_SECOND_POINT )
+            {
+                pushToUndoStack();
+                DrawRect(  rectFirstPointX , rectFirstPointY , e.getX() , e.getY() ); // draw rect between these points
+                currentMode = Mode.ADD_RECT_FIRST_POINT; // next click is to re-add a new rect
+            }
+            else if ( currentMode == Mode.ADD_CIRCLE_FIRST_POINT )
+            {
+                circleFirstPointX = e.getX();
+                circleFirstPointY = e.getY();
+                currentMode = Mode.ADD_CIRCLE_SECOND_POINT;
+            }
+            else if ( currentMode == Mode.ADD_CIRCLE_SECOND_POINT )
+            {
+                pushToUndoStack();
+                double radius = Math.sqrt( (e.getX()-circleFirstPointX)*(e.getX()-circleFirstPointX) +
+                        (e.getY()-circleFirstPointY)*(e.getY()-circleFirstPointY));
+
+                graphicsContext.strokeOval( circleFirstPointX - radius , circleFirstPointY - radius , radius * 2  , radius * 2  );
+                currentMode = Mode.ADD_CIRCLE_FIRST_POINT;
+            }
+
         });
+    }
+
+    void ClearCanvas()
+    {
+        graphicsContext.setFill(Color.WHITE);
+        graphicsContext.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        graphicsContext.setFill(ColorPickerController.currentColor);
+    }
+
+    void DrawRect ( double p1x , double p1y , double p2x , double p2y )
+    {
+        // the first point we pass to strokeRect should be the one in the top left corner, the other one in the bottom right corner
+
+        double firstX = p1x < p2x ? p1x : p2x ;
+        double lengthInX = (p2x > p1x ? p2x : p1x ) - firstX ;
+        double firstY = p1y < p2y ? p1y : p2y ;
+        double lengthInY = ( p2y > p1y ? p2y : p1y ) - firstY ;
+
+        System.out.println(firstX + " " + firstY + " " + lengthInX + " " + lengthInY );
+
+        graphicsContext.strokeRect( firstX , firstY , lengthInX , lengthInY  );
     }
 
     void UseCurrentTool( double x , double y )
@@ -150,7 +215,7 @@ public class Controller
         }
         else // if eraser, erase ,no shit!
         {
-            graphicsContext.clearRect(x - 2, y - 2, 5 * currentScale, 5 * currentScale);
+            graphicsContext.clearRect(x - 2, y - 2, 7 * currentScale, 7 * currentScale);
         }
     }
 
@@ -231,13 +296,13 @@ public class Controller
                 currentScale = 3;
                 break;
         }
+        graphicsContext.setLineWidth(currentScale);
     }
 
     @FXML
     void onClearButtonPressed(ActionEvent event)
     {
-        graphicsContext.setFill(Color.WHITE);
-        graphicsContext.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        ClearCanvas();
     }
 
     private void pushToUndoStack()
@@ -254,12 +319,14 @@ public class Controller
     @FXML
     void onSelectEraserButtonPressed ( ActionEvent event )
     {
+        currentMode = Mode.NORMAL;
         currentTool = Tool.ERASER;
     }
 
     @FXML
     void onSelectPenButtonPressed( ActionEvent event )
     {
+        currentMode = Mode.NORMAL;
         currentTool = Tool.PEN;
     }
 
@@ -274,9 +341,21 @@ public class Controller
     }
 
     @FXML
-    void onRedoButtonPressed ( ActionEvent event )
+    void onAddLineButtonPressed ( ActionEvent event )
     {
+        currentMode = Mode.ADD_LINE_FIRST_POINT;
+    }
 
+    @FXML
+    void onAddRectButtonPressed ( ActionEvent event )
+    {
+        currentMode = Mode.ADD_RECT_FIRST_POINT;
+    }
+
+    @FXML
+    void onAddCircleButtonPressed ( ActionEvent event )
+    {
+        currentMode = Mode.ADD_CIRCLE_FIRST_POINT;
     }
 
     @FXML
@@ -287,15 +366,13 @@ public class Controller
     }
 
     @FXML
-    public void GuessBtnPressed(ActionEvent actionEvent) throws IOException {
+    public void GuessBtnPressed(ActionEvent actionEvent) throws IOException
+    {
         String savePath = "./temp/test.png";
         saveImage(savePath);
         String predClass = RunModel.predict(savePath);
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/GUI/GuessPane.fxml"));
-        Parent root = loader.load();
-        GuessController controller = loader.getController();
-        controller.setName(predClass);
-        Main.secondaryStage.setScene(Main.startGameScene);
+        Main.currentGuessController.setName(predClass);
+        Main.secondaryStage.setScene(Main.PredictorScene);
         Main.secondaryStage.show();
     }
 
@@ -303,14 +380,12 @@ public class Controller
     {
         mainScene = scene; // save it for later
 
-
         scene.setOnKeyPressed(keyEvent ->
         {
             if ( currentMode == Mode.WRITING_TEXT )
             {
                 if ( keyEvent.getCode() == KeyCode.ESCAPE ) // if ESCAPE, stop writing text
                 {
-                    System.out.println("fill was set to " + currentText);
                     // exit text entering mode, and write the text to the canvas
                     graphicsContext.setFont(currentHookedLabel.getFont());
 

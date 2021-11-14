@@ -90,6 +90,9 @@ The user would then press `ESC` to exit Text mode. The method `fillText()` of th
 to write on the canvas. Afterwards, the `Label` would then be deleted. The creation and deletion of the `Label` would be transparent to the user, thinking he was directly writing in the canvas all along.
 
 ### 6) Guess the Sketch using AI
+<p align="center">
+<img src= Pictures/guessFishSketchScreenshot.png>
+</p>
 This features allows the user to draw some doodles and let the AI model guess!
 The model is based on a Convolutional Neural Network model trained on sketches of the following classes:
 ```

@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.shape.Rectangle?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="772.0" prefWidth="1061.0" stylesheets="@Solarized.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="772.0" prefWidth="1061.0" stylesheets="@Solarized.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <children>
       <AnchorPane layoutY="-1.0" prefHeight="128.0" prefWidth="1041.0" styleClass="tab-header-background" stylesheets="@Solarized.css" AnchorPane.bottomAnchor="634.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
          <children>
@@ -61,14 +61,6 @@
                      </image>
                   </ImageView>
                </graphic></JFXButton>
-            <JFXButton layoutX="311.0" layoutY="12.0" onAction="#onRedoButtonPressed" text="Redo">
-               <graphic>
-                  <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@redo-solid.png" />
-                     </image>
-                  </ImageView>
-               </graphic></JFXButton>
             <JFXButton ellipsisString="" layoutX="587.0" layoutY="74.0" onAction="#onClearButtonPressed" prefHeight="50.0" prefWidth="116.0" text="clear">
                <graphic>
                   <ImageView fitHeight="29.0" fitWidth="61.0" pickOnBounds="true" preserveRatio="true">
@@ -107,6 +99,33 @@
                   <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@pen-solid.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </JFXButton>
+            <JFXButton fx:id="AddLineButton" layoutX="429.0" layoutY="13.0" onAction="#onAddLineButtonPressed" text="Line">
+               <graphic>
+                  <ImageView fitHeight="29.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@grip-lines-vertical-solid.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </JFXButton>
+            <JFXButton fx:id="addRectButton" layoutX="529.0" layoutY="13.0" onAction="#onAddRectButtonPressed" text="Rect">
+               <graphic>
+                  <ImageView fitHeight="30.0" fitWidth="29.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@square-regular.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </JFXButton>
+            <JFXButton layoutX="645.0" layoutY="13.0" onAction="#onAddCircleButtonPressed" prefHeight="51.0" prefWidth="129.0" text="Circle">
+               <graphic>
+                  <ImageView fitHeight="31.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@circle-regular.png" />
                      </image>
                   </ImageView>
                </graphic>

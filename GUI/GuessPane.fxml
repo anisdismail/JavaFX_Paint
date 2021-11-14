@@ -23,7 +23,7 @@
             <Font name="Comic Sans MS Bold" size="20.0" />
          </font>
       </JFXButton>
-      <Label fx:id="predictionLabel" contentDisplay="CENTER" layoutX="61.0" layoutY="102.0" prefHeight="50.0" prefWidth="230.0" styleClass="jfx-text-field" text="hello world" textAlignment="CENTER">
+      <Label fx:id="predictionLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="56.0" layoutY="102.0" prefHeight="50.0" prefWidth="230.0" styleClass="jfx-text-field" text="hello world">
          <font>
             <Font size="30.0" />
          </font>

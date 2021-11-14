@@ -65,6 +65,7 @@ public class Main extends Application
         Scene mainScene = new Scene(root);
         (( Controller ) fxmlLoader.getController()).hookInto(mainScene);
 
+        primaryStage.setResizable(false);
         primaryStage.setScene(mainScene);
         primaryStage.show();
     }

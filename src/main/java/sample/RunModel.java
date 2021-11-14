@@ -20,6 +20,9 @@ public class RunModel {
             "Apple", "Bowtie", "Candle", "Door", "Envelope", "Fish", "Guitar", "Ice Cream",
             "Lightning", "Moon", "Mountain", "Star", "Tent", "Toothbrush", "Wristwatch"};
 
+    /**
+     * Load the model from the models folder
+     */
     public static void loadModel() {
         // get path to model folder in resources
         String modelPath = "./src/main/models/sketchCNN";
@@ -27,6 +30,9 @@ public class RunModel {
         model = SavedModelBundle.load(modelPath, "serve");
     }
 
+    /**
+     * Perform predictions using the model and image saved from the canvas
+     */
     public static String predict(String imagePath) throws IOException {
         BufferedImage inputImage = ImageIO.read(new File(imagePath));
         Tensor input_tensor = preprocess(inputImage, 28, 28, 1);
@@ -38,6 +44,9 @@ public class RunModel {
         return argMax(probs);
     }
 
+    /**
+     * Select the index of the class with the highest confidence
+     */
     private static String argMax(Float[] probs) {
         double maxProb = Arrays.stream(probs).mapToDouble(e -> e).max().getAsDouble();
         int maxIndex = 0;
@@ -48,11 +57,12 @@ public class RunModel {
         return index2Class[maxIndex];
     }
 
+    /**
+     * Blurr the input image to reduce pixelation and improve model accuracy
+     */
     private static BufferedImage blurrImage(BufferedImage input) throws IOException {
         Color[] color;
-
-        // Again creating an object of BufferedImage to
-        // create output Image
+        //creating an object of BufferedImage to create output Image
         BufferedImage output = new BufferedImage(
                 input.getWidth(), input.getHeight(),
                 BufferedImage.TYPE_INT_RGB);
@@ -63,13 +73,11 @@ public class RunModel {
         int a1 = 0, r1 = 0, g1 = 0, b1 = 0;
         color = new Color[max];
 
-        // Now this core section of code is responsible for
-        // blurring of an image
+        // Core section of code is responsible for blurring of an image
 
         int x = 1, y = 1, x1, y1, ex = 5, d = 0;
 
-        // Running nested for loops for each pixel
-        // and blurring it
+        // Running nested for loops for each pixel and blurring it
         for (x = rad; x < input.getHeight() - rad; x++) {
             for (y = rad; y < input.getWidth() - rad; y++) {
                 for (x1 = x - rad; x1 < x + rad; x1++) {
@@ -107,13 +115,15 @@ public class RunModel {
             }
         }
 
-        // Writing the blurred image on the disc where
-        // directory is passed as an argument
+        // Writing the blurred image on the disc where directory is passed as an argument
         ImageIO.write(
                 output, "png",
                 new File("./temp/test_smoothed.png"));
         return output;
     }
+    /**
+    * Scale the input image to the dimensions given
+     */
     private static BufferedImage scaleImage(BufferedImage inputImage,int imageHeight, int imageWidth, int imageChannels){
     // Scale the image to required dimensions if needed
         BufferedImage scaledImage = new BufferedImage(imageWidth,
@@ -136,7 +146,9 @@ public class RunModel {
         }
         return scaledImage;
     }
-
+    /*
+    * Prepare the image for prediction
+     */
     private static TFloat32 preprocess(BufferedImage sourceImage, int imageHeight, int imageWidth, int imageChannels) throws IOException {
         Shape imageShape = Shape.of(1, imageHeight, imageWidth, imageChannels);
         BufferedImage blurredImage,scaledImage;
@@ -151,7 +163,5 @@ public class RunModel {
                 }
             }
         });
-    }
-    public static void main(String[] args){
     }
 }

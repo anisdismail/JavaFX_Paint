@@ -7,12 +7,16 @@ import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+import java.text.DecimalFormat;
+
 public class ColorPickerController
 {
     // current selected colors
 
     static Color currentColor = Color.BLACK;
     static Rectangle previewColor;
+
+    private static final DecimalFormat format = new DecimalFormat("#.##");
 
     @FXML
     private JFXSlider alphaSlider;
@@ -53,12 +57,12 @@ public class ColorPickerController
         redSlider.setValue(0);
         blueSlider.setValue(0);
         greenSlider.setValue(0);
-        alphaSlider.setValue(255);
+        alphaSlider.setValue(0.5);
 
         redTextField.setText("0");
         blueTextField.setText("0");
         greenTextField.setText("0");
-        alphaTextField.setText("255");
+        alphaTextField.setText("0.5");
 
         // add textField listeners manually
 
@@ -80,9 +84,29 @@ public class ColorPickerController
             ReEvaluatePickedColor();
         });
 
+        // can't use OnTextFieldChanged since the other labels use ints instead of a double value
         alphaTextField.textProperty().addListener((observableValue, oldValue , newValue ) ->
         {
-            OnTextFieldChanged( alphaTextField , alphaSlider , oldValue , newValue );
+//            OnTextFieldChanged( alphaTextField , alphaSlider , oldValue , newValue );
+            if ( newValue.isEmpty() ) newValue = "0";
+
+            try
+            {
+                double value = Double.parseDouble(newValue);
+
+                if ( value >= 0 && value <= 1)// valid
+                {
+                    // update what should be updated
+                    alphaSlider.setValue(value);
+                }
+                else
+                    alphaTextField.setText(oldValue);
+            }
+            catch (Exception exc)
+            {
+                System.out.println("error when setting text field value");
+            }
+
             ReEvaluatePickedColor();
         });
 
@@ -108,7 +132,7 @@ public class ColorPickerController
 
         alphaSlider.valueProperty().addListener(( observableValue, oldNumber , newNumber ) ->
         {
-            alphaTextField.setText(""+newNumber.intValue());
+            alphaTextField.setText(format.format(newNumber));
             ReEvaluatePickedColor();
         });
 
@@ -141,7 +165,6 @@ public class ColorPickerController
         catch (Exception exc)
         {
             System.out.println("error when setting text field value");
-            exc.printStackTrace();
         }
     }
 
@@ -157,7 +180,7 @@ public class ColorPickerController
                 /*red value */ (redSlider.getValue()/255) ,
                 /*blue value */ (greenSlider.getValue()/255) ,
                 /*green value */ (blueSlider.getValue()/255) ,
-                /*alpha value */ (alphaSlider.getValue()/255)
+                /*alpha value */ (alphaSlider.getValue())
         );
     }
 

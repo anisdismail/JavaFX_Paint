@@ -1,8 +1,51 @@
 # JavaFX_Paint
 
-## Main Window
+This project is our recreation of the Paint application written in **Java** using **JavaFX**.
+This application hosts a lot of the classic features as well as new creative spins including an AI assistant that can guess the sketch you are drawing!
+### Built With
 
----
+* [JavaFX](https://openjfx.io/)
+* [SceneBuilder](https://gluonhq.com/products/scene-builder/)
+* [Tensorflow for Java](https://www.tensorflow.org/jvm)
+
+<!-- GETTING STARTED -->
+## Getting Started
+
+To get a local copy up and running follow these simple steps.
+
+### Prerequisites
+
+* All required dependencies can be installed with **Maven** by importing the external packages in ```pom.xml``` file.
+
+### Installation
+
+1. Clone the repo
+   ```sh
+   git clone https://github.com/anisdismail/JavaFX_Paint.git
+   ```
+2. Change to the project repositry:
+   ```sh
+   cd JavaFX_Paint
+   ```
+
+3. Install required packages with Maven
+   
+<!-- USAGE EXAMPLES -->
+## Usage
+
+To compile the project, run the following command:
+   ```sh
+   javac Starter.java
+   ```
+Then to run the project, run the following command:
+```sh
+java Starter
+```
+## Roadmap
+
+See the [open issues](https://github.com/github_username/repo_name/issues) for a list of proposed features (and known issues).
+
+## About The Project
 
 <p align="center">
 <img src= Pictures/MainGUIScreenShot.png>
@@ -44,11 +87,19 @@ each keypress.
 The user should then press `ESC` to exit Text mode, and we would then use `fillText()` of the `Graphics Context`
 to do the writing on the canvas. Afterwards, the `Label` would then be deleted. The creation and deletion of the `Label` would be transparent to the user, thinking he was directly writing in the canvas all along.
 
-### 6) Guess Game
+### 6) Guess the Sketch using AI
+This features gives you the chance to challenge yourself to draw some doodles and let the AI model guess!
+The model is based on a Convolutional Neural Network model trained on sketches of the following classes:
+```
+{"Apple", "Bowtie", "Candle", "Door", "Envelope", "Fish", "Guitar", "Ice Cream",
+            "Lightning", "Moon", "Mountain", "Star", "Tent", "Toothbrush", "Wristwatch"};
+```
+Further details on the model can be found [here](https://github.com/akshaybahadur21/QuickDraw) 
+When the `Guess` button is pressed, a snapshot of the canvas is saved in the temp folder. Before feeding the 
+image into the CNN model, the image is first preprocessed using a `blurrImage` filter to make it less pixelated. Then
+the image is resized to a `28x28` image using the `scaleImage` method. Next, we feed the image into the CNN model, and we select the class with the highest confidence predicted.
 
-
-
-## Color Picker Window
+### 7) Color Picker 
 
 ---
 

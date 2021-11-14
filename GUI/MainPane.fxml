@@ -44,7 +44,7 @@
                      </graphic></JFXButton>
                </children>
             </GridPane>
-            <JFXButton fx:id="ChangeColorButton" layoutX="815.0" layoutY="73.0" onAction="#OnChangeColorButtonPressed" prefHeight="50.0" prefWidth="136.0" text="Change">
+            <JFXButton fx:id="ChangeColorButton" layoutX="819.0" layoutY="73.0" onAction="#OnChangeColorButtonPressed" prefHeight="50.0" prefWidth="144.0" text="Change">
                <graphic>
                   <ImageView fitHeight="26.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -52,7 +52,7 @@
                      </image>
                   </ImageView>
                </graphic></JFXButton>
-            <JFXComboBox fx:id="penSizeComboBox" layoutX="183.0" layoutY="75.0" onAction="#OnMenuItemChanged" prefHeight="39.0" prefWidth="162.0" promptText="test-text" style="-fx-text-fill: #ffffff;" />
+            <JFXComboBox fx:id="penSizeComboBox" layoutX="170.0" layoutY="72.0" onAction="#OnMenuItemChanged" prefHeight="39.0" prefWidth="162.0" promptText="test-text" style="-fx-text-fill: #ffffff;" />
             <JFXButton ellipsisString="" layoutX="183.0" layoutY="13.0" onAction="#onUndoButtonPressed" prefHeight="48.0" prefWidth="122.0" text="Undo">
                <graphic>
                   <ImageView fitHeight="28.0" fitWidth="33.0" pickOnBounds="true" preserveRatio="true">
@@ -61,15 +61,15 @@
                      </image>
                   </ImageView>
                </graphic></JFXButton>
-            <JFXButton ellipsisString="" layoutX="587.0" layoutY="74.0" onAction="#onClearButtonPressed" prefHeight="50.0" prefWidth="116.0" text="clear">
+            <JFXButton ellipsisString="" layoutX="584.0" layoutY="73.0" onAction="#onClearButtonPressed" prefHeight="50.0" prefWidth="122.0" text="clear">
                <graphic>
-                  <ImageView fitHeight="29.0" fitWidth="61.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="29.0" fitWidth="46.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@broom-solid.png" />
                      </image>
                   </ImageView>
                </graphic></JFXButton>
-            <JFXButton fx:id="addTextButton" ellipsisString="" layoutX="707.0" layoutY="73.0" onAction="#onAddTextButtonPressed" prefHeight="50.0" prefWidth="103.0" text="text">
+            <JFXButton fx:id="addTextButton" ellipsisString="" layoutX="710.0" layoutY="73.0" onAction="#onAddTextButtonPressed" prefHeight="50.0" prefWidth="103.0" text="text">
                <graphic>
                   <ImageView fitHeight="30.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -77,8 +77,8 @@
                      </image>
                   </ImageView>
                </graphic></JFXButton>
-            <Rectangle fx:id="previewWindowMainWindow" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="69.0" layoutX="957.0" layoutY="29.0" stroke="BLACK" strokeType="INSIDE" width="70.0" />
-            <JFXButton fx:id="selectEraserButton" graphicTextGap="0.0" layoutX="461.0" layoutY="72.0" onAction="#onSelectEraserButtonPressed" prefHeight="52.0" prefWidth="122.0" text="Eraser">
+            <Rectangle fx:id="previewWindowMainWindow" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="69.0" layoutX="965.0" layoutY="31.0" stroke="BLACK" strokeType="INSIDE" width="70.0" />
+            <JFXButton fx:id="selectEraserButton" graphicTextGap="0.0" layoutX="448.0" layoutY="74.0" onAction="#onSelectEraserButtonPressed" prefHeight="52.0" prefWidth="129.0" text="Eraser">
                <graphic>
                   <ImageView fitHeight="32.0" fitWidth="33.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -94,7 +94,7 @@
                      </image>
                   </ImageView>
                </graphic></JFXButton>
-            <JFXButton fx:id="selectPenButton" layoutX="353.0" layoutY="72.0" onAction="#onSelectPenButtonPressed" text="Pen">
+            <JFXButton fx:id="selectPenButton" layoutX="338.0" layoutY="72.0" onAction="#onSelectPenButtonPressed" text="Pen">
                <graphic>
                   <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                      <image>

@@ -94,6 +94,7 @@ to write on the canvas. Afterwards, the `Label` would then be deleted. The creat
 <p align="center">
 <img src= Pictures/guessFishSketchScreenshot.png>
 </p>
+
 This features allows the user to draw some doodles and let the AI model guess!
 The model is based on a Convolutional Neural Network model trained on sketches of the following classes:
 ```

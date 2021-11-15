@@ -32,12 +32,13 @@ To get a local copy up and running follow these simple steps.
    ```
 
 3. Install required packages with Maven
-   
+ 
+4. Mark the root folder of the project as **resources root**.   
+When Opening the Project on `Intellij`, right-click on the root folder `JavaFX_Paint` and set is as `Set Directory As` -> `Resources Root` 
 
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-When Opening the Project on `Intellij`, right-click on the root folder `JavaFX_Paint` and set is as `Set Directory As` -> `Resources Root` 
 
 To compile the project, run the following command:
    ```sh

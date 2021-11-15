@@ -202,8 +202,6 @@ public class Controller
         double firstY = p1y < p2y ? p1y : p2y ;
         double lengthInY = ( p2y > p1y ? p2y : p1y ) - firstY ;
 
-        System.out.println(firstX + " " + firstY + " " + lengthInX + " " + lengthInY );
-
         graphicsContext.strokeRect( firstX , firstY , lengthInX , lengthInY  );
     }
 
@@ -387,6 +385,7 @@ public class Controller
                 if ( keyEvent.getCode() == KeyCode.ESCAPE ) // if ESCAPE, stop writing text
                 {
                     // exit text entering mode, and write the text to the canvas
+                    pushToUndoStack();
                     graphicsContext.setFont(currentHookedLabel.getFont());
 
                     graphicsContext.fillText( currentHookedLabel.getText() ,

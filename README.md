@@ -5,6 +5,7 @@
 </p>
 This project is our recreation of the Paint application written in **Java** and **JavaFX**.
 This application hosts a lot of the classic features, as well as new creative spins including an AI assistant that can guess the sketch you are drawing!
+
 ### Built With
 
 * [JavaFX](https://openjfx.io/)
